@@ -1,9 +1,5 @@
 # Change Log
 
-All notable changes to the "cheatsheet" extension will be documented in this file.
+## v0.0.1
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+- It is possible to read and write cheat sheets in markdown format and change the settings of the folder containing the cheatSheet.md file.

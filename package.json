@@ -1,8 +1,9 @@
 {
   "name": "cheatsheet",
   "displayName": "Cheat Sheet",
-  "description": "Read and write cheat sheet",
+  "description": "Allows you to write and read cheat sheet",
   "publisher": "StrahlBalazs",
+  "icon": "resources/icon.png",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.42.0"
@@ -10,6 +11,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/Strabi1/CheatSheet"
+	},
   "activationEvents": ["onStartupFinished"],
   "main": "./out/extension.js",
   "contributes": {
