@@ -1,26 +1,87 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	const fileName = 'cheatSheet.md'
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "cheatsheet" is now active!');
+	let statusBarReadCheatSheet = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 3);
+	statusBarReadCheatSheet.text =  `$(book) Read`;
+	statusBarReadCheatSheet.tooltip = 'Read Cheat Sheet';
+	statusBarReadCheatSheet.command = 'cheatsheet.readCheatSheet';
+	statusBarReadCheatSheet.show();
+	context.subscriptions.push(statusBarReadCheatSheet);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('cheatsheet.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from CheatSheet!');
-	});
+	let statusBarWriteCheatSheet = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 2);
+	statusBarWriteCheatSheet.text =  `$(pencil) Write`;
+	statusBarWriteCheatSheet.tooltip = 'Write Cheat Sheet';
+	statusBarWriteCheatSheet.command = 'cheatsheet.writeCheatSheet';
+	statusBarWriteCheatSheet.show();
+	context.subscriptions.push(statusBarWriteCheatSheet);
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('cheatsheet.readCheatSheet', async() => {
+			await openCheetSheet(false);
+		}),
+		
+		vscode.commands.registerCommand('cheatsheet.writeCheatSheet', async() => {
+			await openCheetSheet(true);
+		}),
+
+		vscode.commands.registerCommand('cheatsheet.changeCheatSheetFolder', async() => {
+			changeCheatSheetFolder();
+		})
+	);
+
+	async function openCheetSheet(write: boolean) {
+
+		let filePath = vscode.workspace.getConfiguration('cheatsheet').get('cheatSheetFolder');
+		
+		while(!filePath) {
+			await changeCheatSheetFolder();
+			await delay(100);
+			filePath = vscode.workspace.getConfiguration('cheatsheet').get('cheatSheetFolder');
+		}
+
+		const fileWithPath = path.join(String(filePath), fileName);
+
+		if(!fs.existsSync(fileWithPath)) {
+			try {
+				fs.writeFileSync(fileWithPath, '');
+			} catch (err: any) {
+				vscode.window.showErrorMessage(`Cannot create cheatSheet.md file. Errorcode: ${err}`);
+			}
+		}
+
+		const document = await vscode.workspace.openTextDocument(vscode.Uri.parse("file:"+fileWithPath));
+		await vscode.window.showTextDocument(document, {preview: false, viewColumn: 1, })
+
+		try {
+			if(write)
+				await vscode.commands.executeCommand('markdown.showPreviewToSide');
+			else
+				await vscode.commands.executeCommand('markdown.showPreview');
+		} catch {}
+	}
+
+	async function changeCheatSheetFolder() {
+		const uris = await vscode.window.showOpenDialog({
+			canSelectFiles: false,
+			canSelectFolders: true,
+			canSelectMany: false,
+			openLabel: 'Select cheate sheet folder',
+		});
+		
+		if (uris && uris[0]) {
+			let config = vscode.workspace.getConfiguration('cheatsheet');
+			config.update('cheatSheetFolder', uris[0].fsPath, vscode.ConfigurationTarget.Global);
+		}
+	}
+
+	function delay(milliseconds: number): Promise<void> {
+		return new Promise(resolve => setTimeout(resolve, milliseconds));
+	}
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
