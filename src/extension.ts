@@ -22,11 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('cheatsheet.readCheatSheet', async() => {
-			await openCheetSheet(false);
+			await openCheatSheet(false);
 		}),
 		
 		vscode.commands.registerCommand('cheatsheet.writeCheatSheet', async() => {
-			await openCheetSheet(true);
+			await openCheatSheet(true);
 		}),
 
 		vscode.commands.registerCommand('cheatsheet.changeCheatSheetFolder', async() => {
@@ -34,15 +34,20 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
-	async function openCheetSheet(write: boolean) {
+	async function openCheatSheet(write: boolean) {
 
 		let filePath = vscode.workspace.getConfiguration('cheatsheet').get('cheatSheetFolder');
 		
-		while(!filePath) {
+		if(!filePath) {
 			await changeCheatSheetFolder();
 			await delay(100);
 			filePath = vscode.workspace.getConfiguration('cheatsheet').get('cheatSheetFolder');
 		}
+
+		await delay(100);
+
+		if(!filePath)
+			return;
 
 		const fileWithPath = path.join(String(filePath), fileName);
 
