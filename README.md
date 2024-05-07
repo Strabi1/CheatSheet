@@ -10,3 +10,6 @@ If you download the Markdown Preview Enhanced (Id: shd101wyy.markdown-preview-en
 
 ## Modify cheat sheet folder
 ![Modify cheat sheet folder](images/gif2.gif)
+
+## Edit notes
+![Edit notes](images/gif3.gif)

@@ -4,7 +4,7 @@
   "description": "Allows you to write and read cheat sheet",
   "publisher": "StrahlBalazs",
   "icon": "resources/icon.png",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.42.0"
   },
@@ -30,6 +30,10 @@
       {
         "command": "cheatsheet.changeCheatSheetFolder",
         "title": "Change Cheat Sheet Folder"
+      },
+      {
+        "command": "cheatsheet.openNotes",
+        "title": "Open notes"
       }
     ],
     "configuration": {
